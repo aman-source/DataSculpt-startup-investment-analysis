@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "orange", "font": {"color": "white"}, "id": "Tigerspike", "label": "Tigerspike", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Enterprise Software", "label": "Enterprise Software", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "CloudEndure", "label": "CloudEndure", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Social Solutions", "label": "Social Solutions", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Virtustream", "label": "Virtustream", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Actifio", "label": "Actifio", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Serus", "label": "Serus", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "DNA Health Corp", "label": "DNA Health Corp", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Health and Wellness", "label": "Health and Wellness", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Biophysical Corporation", "label": "Biophysical Corporation", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Providence Surgery Centers", "label": "Providence Surgery Centers", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "HealthSpot", "label": "HealthSpot", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Melty", "label": "Melty", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Social Network Media", "label": "Social Network Media", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Rowl", "label": "Rowl", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "fluid Operations", "label": "fluid Operations", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Virtualization", "label": "Virtualization", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Mekitec", "label": "Mekitec", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Hardware + Software", "label": "Hardware + Software", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "KE2 Therm Solutions", "label": "KE2 Therm Solutions", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "3d Vision Systems", "label": "3d Vision Systems", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "DoStuff Media", "label": "DoStuff Media", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Digital Media", "label": "Digital Media", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Leetchi", "label": "Leetchi", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Entertainment", "label": "Entertainment", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "SquareOne", "label": "SquareOne", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "CAIS", "label": "CAIS", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Software", "label": "Software", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "SkyBitz", "label": "SkyBitz", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Trellise", "label": "Trellise", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "TalentSoft", "label": "TalentSoft", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "RealSpeaker Inc", "label": "RealSpeaker Inc", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "nxtControl", "label": "nxtControl", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Titansan", "label": "Titansan", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Gamma Enterprise Technologies", "label": "Gamma Enterprise Technologies", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Reval.com", "label": "Reval.com", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Cherwell Software", "label": "Cherwell Software", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Mixed Media Labs", "label": "Mixed Media Labs", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "ESO Solutions", "label": "ESO Solutions", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "LLamasoft", "label": "LLamasoft", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "TopTenREVIEWS", "label": "TopTenREVIEWS", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Curated Web", "label": "Curated Web", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Kriyari", "label": "Kriyari", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Stiki Digital", "label": "Stiki Digital", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "EXPO", "label": "EXPO", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "8 Securities", "label": "8 Securities", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Personal Finance", "label": "Personal Finance", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Akebia Therapeutics", "label": "Akebia Therapeutics", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Biotechnology", "label": "Biotechnology", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "AmVac", "label": "AmVac", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Ablative Solutions", "label": "Ablative Solutions", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Zytoprotec", "label": "Zytoprotec", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Logical Therapeutics", "label": "Logical Therapeutics", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "SARcode Bioscience", "label": "SARcode Bioscience", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "BioMedomics", "label": "BioMedomics", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "ImmuRx", "label": "ImmuRx", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "NuScriptRx", "label": "NuScriptRx", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Health Care", "label": "Health Care", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Hepa Wash", "label": "Hepa Wash", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "PillPack", "label": "PillPack", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "OnShift", "label": "OnShift", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Audax Health Solutions", "label": "Audax Health Solutions", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Enigma Software Productions", "label": "Enigma Software Productions", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Games", "label": "Games", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Heatwave Interactive", "label": "Heatwave Interactive", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Happy Elements", "label": "Happy Elements", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "betaworks", "label": "betaworks", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Coworking", "label": "Coworking", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Everyclick", "label": "Everyclick", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Search", "label": "Search", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "PageBites", "label": "PageBites", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "SmartZip Analytics", "label": "SmartZip Analytics", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Real Estate", "label": "Real Estate", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "HomeUnion Services", "label": "HomeUnion Services", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Jambool", "label": "Jambool", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Virtual Goods", "label": "Virtual Goods", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Datalogix", "label": "Datalogix", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Advertising", "label": "Advertising", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Sprout", "label": "Sprout", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Innovectra", "label": "Innovectra", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "thredUP", "label": "thredUP", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Fashion", "label": "Fashion", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "iMemories", "label": "iMemories", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Film", "label": "Film", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "PrismTech", "label": "PrismTech", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Embedded Hardware and Software", "label": "Embedded Hardware and Software", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Swifto", "label": "Swifto", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Pets", "label": "Pets", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Spendgo", "label": "Spendgo", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "SaaS", "label": "SaaS", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "nPario", "label": "nPario", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Analytics", "label": "Analytics", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "DeliRadio", "label": "DeliRadio", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "InCrowd", "label": "InCrowd", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Pellet Technology USA", "label": "Pellet Technology USA", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Manufacturing", "label": "Manufacturing", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "PhoneGuard", "label": "PhoneGuard", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Public Relations", "label": "Public Relations", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Ibetor", "label": "Ibetor", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Aerospace", "label": "Aerospace", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Care.com", "label": "Care.com", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Customer Service", "label": "Customer Service", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "The Fizzback Group", "label": "The Fizzback Group", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "NaturalMotion", "label": "NaturalMotion", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Graphics", "label": "Graphics", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Zarbee\u0027s", "label": "Zarbee\u0027s", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "E-Commerce", "label": "E-Commerce", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Jumia", "label": "Jumia", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Libersy", "label": "Libersy", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Octmami", "label": "Octmami", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Onestop Internet", "label": "Onestop Internet", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "TiqIQ", "label": "TiqIQ", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "GreenSQL", "label": "GreenSQL", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Security", "label": "Security", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "KoolSpan", "label": "KoolSpan", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Privaris", "label": "Privaris", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "HALO Maritime Defense Systems", "label": "HALO Maritime Defense Systems", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "uShip", "label": "uShip", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Public Transportation", "label": "Public Transportation", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Five Star Technologies", "label": "Five Star Technologies", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Electronics", "label": "Electronics", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Lumenergi", "label": "Lumenergi", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Clean Technology", "label": "Clean Technology", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "BIScience", "label": "BIScience", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Business Intelligence", "label": "Business Intelligence", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Roomer Travel", "label": "Roomer Travel", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "All Markets", "label": "All Markets", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Finexkap", "label": "Finexkap", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Financial Services", "label": "Financial Services", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "JustRight Surgical", "label": "JustRight Surgical", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Hardware", "label": "Hardware", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "PowWowHR", "label": "PowWowHR", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Human Resources", "label": "Human Resources", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "The Mad Video", "label": "The Mad Video", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Photography", "label": "Photography", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "MoreMagic Solutions", "label": "MoreMagic Solutions", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Finance", "label": "Finance", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "ecomom", "label": "ecomom", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Organic", "label": "Organic", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Theraclone Sciences", "label": "Theraclone Sciences", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Therapeutics", "label": "Therapeutics", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Blue Lane Technologies", "label": "Blue Lane Technologies", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Web Hosting", "label": "Web Hosting", "shape": "dot", "size": 10}, {"color": "orange", "font": {"color": "white"}, "id": "Loopt", "label": "Loopt", "shape": "dot", "size": 10}, {"color": "blue", "font": {"color": "white"}, "id": "Networking", "label": "Networking", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Tigerspike", "to": "Enterprise Software", "width": 1}, {"from": "Enterprise Software", "to": "CloudEndure", "width": 1}, {"from": "Enterprise Software", "to": "Social Solutions", "width": 1}, {"from": "Enterprise Software", "to": "Virtustream", "width": 1}, {"from": "Enterprise Software", "to": "Actifio", "width": 1}, {"from": "Enterprise Software", "to": "Serus", "width": 1}, {"from": "DNA Health Corp", "to": "Health and Wellness", "width": 1}, {"from": "Health and Wellness", "to": "Biophysical Corporation", "width": 1}, {"from": "Health and Wellness", "to": "Providence Surgery Centers", "width": 1}, {"from": "Health and Wellness", "to": "HealthSpot", "width": 1}, {"from": "Melty", "to": "Social Network Media", "width": 1}, {"from": "Social Network Media", "to": "Rowl", "width": 1}, {"from": "fluid Operations", "to": "Virtualization", "width": 1}, {"from": "Mekitec", "to": "Hardware + Software", "width": 1}, {"from": "Hardware + Software", "to": "KE2 Therm Solutions", "width": 1}, {"from": "Hardware + Software", "to": "3d Vision Systems", "width": 1}, {"from": "DoStuff Media", "to": "Digital Media", "width": 1}, {"from": "Leetchi", "to": "Entertainment", "width": 1}, {"from": "Entertainment", "to": "SquareOne", "width": 1}, {"from": "CAIS", "to": "Software", "width": 1}, {"from": "Software", "to": "SkyBitz", "width": 1}, {"from": "Software", "to": "Trellise", "width": 1}, {"from": "Software", "to": "TalentSoft", "width": 1}, {"from": "Software", "to": "RealSpeaker Inc", "width": 1}, {"from": "Software", "to": "nxtControl", "width": 1}, {"from": "Software", "to": "Titansan", "width": 1}, {"from": "Software", "to": "Gamma Enterprise Technologies", "width": 1}, {"from": "Software", "to": "Reval.com", "width": 1}, {"from": "Software", "to": "Cherwell Software", "width": 1}, {"from": "Software", "to": "Mixed Media Labs", "width": 1}, {"from": "Software", "to": "ESO Solutions", "width": 1}, {"from": "Software", "to": "LLamasoft", "width": 1}, {"from": "TopTenREVIEWS", "to": "Curated Web", "width": 1}, {"from": "Curated Web", "to": "Kriyari", "width": 1}, {"from": "Curated Web", "to": "Stiki Digital", "width": 1}, {"from": "Curated Web", "to": "EXPO", "width": 1}, {"from": "8 Securities", "to": "Personal Finance", "width": 1}, {"from": "Akebia Therapeutics", "to": "Biotechnology", "width": 1}, {"from": "Biotechnology", "to": "AmVac", "width": 1}, {"from": "Biotechnology", "to": "Ablative Solutions", "width": 1}, {"from": "Biotechnology", "to": "Zytoprotec", "width": 1}, {"from": "Biotechnology", "to": "Logical Therapeutics", "width": 1}, {"from": "Biotechnology", "to": "SARcode Bioscience", "width": 1}, {"from": "Biotechnology", "to": "BioMedomics", "width": 1}, {"from": "Biotechnology", "to": "ImmuRx", "width": 1}, {"from": "NuScriptRx", "to": "Health Care", "width": 1}, {"from": "Health Care", "to": "Hepa Wash", "width": 1}, {"from": "Health Care", "to": "PillPack", "width": 1}, {"from": "Health Care", "to": "OnShift", "width": 1}, {"from": "Health Care", "to": "Audax Health Solutions", "width": 1}, {"from": "Enigma Software Productions", "to": "Games", "width": 1}, {"from": "Games", "to": "Heatwave Interactive", "width": 1}, {"from": "Games", "to": "Happy Elements", "width": 1}, {"from": "betaworks", "to": "Coworking", "width": 1}, {"from": "Everyclick", "to": "Search", "width": 1}, {"from": "Search", "to": "PageBites", "width": 1}, {"from": "SmartZip Analytics", "to": "Real Estate", "width": 1}, {"from": "Real Estate", "to": "HomeUnion Services", "width": 1}, {"from": "Jambool", "to": "Virtual Goods", "width": 1}, {"from": "Datalogix", "to": "Advertising", "width": 1}, {"from": "Advertising", "to": "Sprout", "width": 1}, {"from": "Advertising", "to": "Innovectra", "width": 1}, {"from": "thredUP", "to": "Fashion", "width": 1}, {"from": "iMemories", "to": "Film", "width": 1}, {"from": "PrismTech", "to": "Embedded Hardware and Software", "width": 1}, {"from": "Swifto", "to": "Pets", "width": 1}, {"from": "Spendgo", "to": "SaaS", "width": 1}, {"from": "nPario", "to": "Analytics", "width": 1}, {"from": "Analytics", "to": "DeliRadio", "width": 1}, {"from": "Analytics", "to": "InCrowd", "width": 1}, {"from": "Pellet Technology USA", "to": "Manufacturing", "width": 1}, {"from": "PhoneGuard", "to": "Public Relations", "width": 1}, {"from": "Ibetor", "to": "Aerospace", "width": 1}, {"from": "Care.com", "to": "Customer Service", "width": 1}, {"from": "Customer Service", "to": "The Fizzback Group", "width": 1}, {"from": "NaturalMotion", "to": "Graphics", "width": 1}, {"from": "Zarbee\u0027s", "to": "E-Commerce", "width": 1}, {"from": "E-Commerce", "to": "Jumia", "width": 1}, {"from": "E-Commerce", "to": "Libersy", "width": 1}, {"from": "E-Commerce", "to": "Octmami", "width": 1}, {"from": "E-Commerce", "to": "Onestop Internet", "width": 1}, {"from": "E-Commerce", "to": "TiqIQ", "width": 1}, {"from": "GreenSQL", "to": "Security", "width": 1}, {"from": "Security", "to": "KoolSpan", "width": 1}, {"from": "Security", "to": "Privaris", "width": 1}, {"from": "Security", "to": "HALO Maritime Defense Systems", "width": 1}, {"from": "uShip", "to": "Public Transportation", "width": 1}, {"from": "Five Star Technologies", "to": "Electronics", "width": 1}, {"from": "Lumenergi", "to": "Clean Technology", "width": 1}, {"from": "BIScience", "to": "Business Intelligence", "width": 1}, {"from": "Roomer Travel", "to": "All Markets", "width": 1}, {"from": "Finexkap", "to": "Financial Services", "width": 1}, {"from": "JustRight Surgical", "to": "Hardware", "width": 1}, {"from": "PowWowHR", "to": "Human Resources", "width": 1}, {"from": "The Mad Video", "to": "Photography", "width": 1}, {"from": "MoreMagic Solutions", "to": "Finance", "width": 1}, {"from": "ecomom", "to": "Organic", "width": 1}, {"from": "Theraclone Sciences", "to": "Therapeutics", "width": 1}, {"from": "Blue Lane Technologies", "to": "Web Hosting", "width": 1}, {"from": "Loopt", "to": "Networking", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 150,
+            "springConstant": 0.05,
+            "springLength": 100
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
